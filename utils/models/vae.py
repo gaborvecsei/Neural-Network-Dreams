@@ -7,8 +7,8 @@ from utils.model_config import *
 
 
 def sampling(args):
-    z_mean, z_log_var, z_dim = args
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], z_dim), mean=0., stddev=1.)
+    z_mean, z_log_var = args
+    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], VAE_Z_DIM), mean=0., stddev=1.)
     return z_mean + K.exp(z_log_var / 2) * epsilon
 
 
@@ -36,7 +36,7 @@ class VAE():
         vae_z_mean = Dense(self.z_dim)(vae_z_in)
         vae_z_log_var = Dense(self.z_dim)(vae_z_in)
 
-        vae_z = Lambda(sampling)([vae_z_mean, vae_z_log_var, self.z_dim])
+        vae_z = Lambda(sampling)([vae_z_mean, vae_z_log_var])
         vae_z_input = Input(shape=(self.z_dim,))
 
         vae_dense = Dense(1024)

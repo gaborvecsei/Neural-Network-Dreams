@@ -35,6 +35,8 @@ for i in range(n_images_to_generate):
 
 # Remove the manually created "starter" frames
 generated_encoded_frames = generated_encoded_frames[model_config.GRU_TIME_STEPS:, :]
+
+# Decode the predicted images
 generated_decoded_frames = vae.decoder.predict(generated_encoded_frames)
 generated_decoded_frames = (generated_decoded_frames * 255).astype(np.uint8)
 
