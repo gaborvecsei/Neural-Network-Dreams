@@ -24,7 +24,7 @@ class RNN:
         model.add(GRU(self.hidden_neurons, input_shape=(self.time_steps, self.input_dim), return_sequences=True))
         model.add(GRU(self.hidden_neurons))
         model.add(Dense(self.output_dim, activation='softmax'))
-        model.compile(loss="categorical_crossentropy", optimizer="rmsprop", metrics=['accuracy'])
+        model.compile(loss="mse", optimizer="rmsprop", metrics=['accuracy'])
         return model
 
     def train(self, data_in, data_out, epochs=100, include_callbacks=True):
