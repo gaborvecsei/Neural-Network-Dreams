@@ -10,7 +10,6 @@ class RNN:
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.time_steps = time_step
-        self.hidden_neurons = GRU_NB_HIDDEN_NEURONS
 
         self.model = self._build()
 
@@ -21,10 +20,11 @@ class RNN:
 
     def _build(self):
         model = Sequential()
-        model.add(GRU(self.hidden_neurons, input_shape=(self.time_steps, self.input_dim), return_sequences=True))
-        model.add(GRU(self.hidden_neurons))
+        model.add(GRU(32, input_shape=(self.time_steps, self.input_dim), return_sequences=True))
+        model.add(GRU(64, return_sequences=True))
+        model.add(GRU(128))
         model.add(Dense(self.output_dim, activation='softmax'))
-        model.compile(loss="mse", optimizer="rmsprop", metrics=['accuracy'])
+        model.compile(loss="categorical_crossentropy", optimizer="rmsprop", metrics=['accuracy'])
         return model
 
     def train(self, data_in, data_out, epochs=100, include_callbacks=True):

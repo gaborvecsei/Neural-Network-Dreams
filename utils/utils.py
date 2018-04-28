@@ -54,7 +54,7 @@ def get_frames_from_youtube_video(video_url, frame_preprocessor=lambda x:x, remo
     output_file_name = tempfile.NamedTemporaryFile().name
 
     # Youtube-DL: https://rg3.github.io/youtube-dl/
-    command = ["youtube-dl", "-f", "bestvideo[height<=480]+bestaudio/best[height<=480]", "--quiet", "-o",
+    command = ["youtube-dl", "-f", "bestvideo[height<=240]+bestaudio/best[height<=240]", "--quiet", "-o",
                output_file_name, video_url]
     subprocess.check_call(command)
 
