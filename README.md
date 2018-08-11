@@ -11,10 +11,10 @@ You can find the details of the training and generation in this [Notebook](video
 
 ## VAE encoded and then decoded frames
 
-With the images I train the VAE and then I encode the frames to 32 dim vectors.
-After this I immediately decode it and this is the result I get:
+With the images I train the VAE and then I encode the frames to `32 dim` vectors.
+After this I immediately decode the samples, and this is the result I get:
 
-![img](art/vae_decoded_vs_original.mp4)
+![img](art/vae_decoded_vs_original.gif)
 
 ## Generated sequence
 
@@ -38,10 +38,10 @@ of the target variables.
 4. Train the RNN (currently it is GRU with MDN)
 5. Generate encoded images with RNN and decode it with the VAE
 
-#### Previous version (without MDN):
+#### Previous version (without MD layer):
+
+![img](art/generated_image_sequence_prev.gif)
+
+#### Current version (with MD layer):
 
 ![img](art/generated_image_sequence.gif)
-
-#### Current version (with MDN):
-
-![img](art/generated_image_sequence.mp4)
