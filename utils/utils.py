@@ -60,7 +60,8 @@ def get_frames_from_youtube_video(video_url, frame_preprocessor=lambda x:x, remo
 
     # It is not always mp4 format, it can be mkv, etc... because of
     # this we need to "search" the file with the right extension
-    input_file_name = str(list(Path(output_file_name).parent.glob("*"))[0])
+    output_file_path = Path(output_file_name)
+    input_file_name = str(list(output_file_path.parent.glob(output_file_path.stem + ".*"))[0])
 
     with tempfile.TemporaryDirectory() as tmp_folder:
         output_filename = os.path.join(tmp_folder, '%06d.jpg')

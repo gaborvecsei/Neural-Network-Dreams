@@ -3,6 +3,7 @@ from keras.layers import Dense, GRU
 from keras.models import Sequential
 
 from utils.model_config import *
+from . import mdn
 
 
 class RNN:
@@ -23,8 +24,10 @@ class RNN:
         model.add(GRU(32, input_shape=(self.time_steps, self.input_dim), return_sequences=True))
         model.add(GRU(64, return_sequences=True))
         model.add(GRU(128))
-        model.add(Dense(self.output_dim, activation='softmax'))
-        model.compile(loss="categorical_crossentropy", optimizer="rmsprop", metrics=['accuracy'])
+        model.add(mdn.MDN(VAE_Z_DIM, NUMBER_MIXTURES))
+        # model.add(Dense(self.output_dim, activation='softmax'))
+        # model.compile(loss="categorical_crossentropy", optimizer="rmsprop", metrics=['accuracy'])
+        model.compile(loss=mdn.get_mixture_loss_func(VAE_Z_DIM, NUMBER_MIXTURES), optimizer="adam", metrics=['accuracy'])
         return model
 
     def train(self, data_in, data_out, epochs=100, include_callbacks=True):

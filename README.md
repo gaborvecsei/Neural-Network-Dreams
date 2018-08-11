@@ -14,14 +14,34 @@ You can find the details of the training and generation in this [Notebook](video
 With the images I train the VAE and then I encode the frames to 32 dim vectors.
 After this I immediately decode it and this is the result I get:
 
-![img](art/vae_decoded_vs_original.gif)
+![img](art/vae_decoded_vs_original.mp4)
 
 ## Generated sequence
 
-For generation I train the VAE and then with that, I encode all the frames used in the training.
-From the encoded frames, I generate data batches like `(n_data, n_time_steps, 32)` with a sliding window -> This is `X`.
-`y` is with shape of `(n_data, 32)`. For every `X` there is an `y` witch is the next frame after the `n_time_steps` frames in the original sequence.
+With the previous version which was built without a Mixture Density Layer, the generated sequence was pretty static, it looked like an average
+image. Then I read the first few sentences of the paper [Mixture Density Networks (MDN)](https://publications.aston.ac.uk/373/1/NCRG_94_004.pdf) and realized the problem.
 
-*As you can see, right now there is no much "generation" going on* :sob:
+> Minimization of a sum-of-squares or cross-entropy error function leads to network outputs
+which approximate the conditional averages of the target data, conditioned on the
+input vector. For classifications problems, with a suitably chosen target coding scheme,
+these averages represent the posterior probabilities of class membership, and so can be
+regarded as optimal. For problems involving the prediction of continuous variables, however,
+the conditional averages provide only a very limited description of the properties
+of the target variables.
+
+1. Train VAE to encode images
+2. Encode images to `32 dim` vectors
+3. Create data batches (time steps) for the RNN with a sliding window
+    - Shape of `X`: `(n_data, n_time_steps, 32)`, (32 is the output dim from the VAE)
+    - Shape of `y`: `(n_data, 32)`
+    - Intuitively: For `n_time_steps` consecutive frames in `X`, we can find the next frame `n_time_steps + 1` in the corresponding `y`.
+4. Train the RNN (currently it is GRU with MDN)
+5. Generate encoded images with RNN and decode it with the VAE
+
+#### Previous version (without MDN):
 
 ![img](art/generated_image_sequence.gif)
+
+#### Current version (with MDN):
+
+![img](art/generated_image_sequence.mp4)
