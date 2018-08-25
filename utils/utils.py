@@ -2,11 +2,12 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Callable
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import youtube_dl
 
 
 def create_rnn_data(data: np.ndarray, time_steps: int) -> Tuple[np.ndarray, np.ndarray]:
@@ -53,27 +54,32 @@ def frame_preprocessor(frame):
     return frame
 
 
-def get_frames_from_youtube_video(video_url, frame_preprocessor=lambda x: x):
-    output_file_name = tempfile.NamedTemporaryFile().name
+def get_frames_from_youtube_video(video_url: str, frame_preprocessor: Callable[[np.ndarray], np.ndarray] = None):
+    # Downloading the video
 
-    download_command = ["youtube-dl", "-f", "bestvideo[height<=240]+bestaudio/best[height<=240]", "--quiet", "-o",
-                        output_file_name, video_url]
-    subprocess.check_call(download_command)
+    output_video_file_path = tempfile.NamedTemporaryFile().name
 
-    # It is not always mp4 format, it can be mkv, etc... because of this we need to "search" the
-    # file with the right file
-    output_file_path = Path(output_file_name)
-    input_file_name = str(list(output_file_path.parent.glob(output_file_path.stem + ".*"))[0])
+    youtube_downloader_params = {"quiet": False, "outtmpl": output_video_file_path, "format": "best[height<=240]"}
+    with youtube_dl.YoutubeDL(params=youtube_downloader_params) as ydl:
+        ydl.download([video_url])
+
+    output_video_file_path = Path(output_video_file_path)
+
+    # Frame extraction
+
+    input_video_file_path = str(list(output_video_file_path.parent.glob(output_video_file_path.stem + "*"))[0])
 
     with tempfile.TemporaryDirectory() as tmp_folder:
         output_filename = os.path.join(tmp_folder, '%06d.jpg')
-        video_to_frames_command = ['ffmpeg', '-loglevel', 'debug', '-i', input_file_name, '-vf', 'fps=24',
+        video_to_frames_command = ['ffmpeg', '-loglevel', 'debug', '-i', input_video_file_path, '-vf', 'fps=24',
                                    output_filename]
         subprocess.check_call(video_to_frames_command)
 
-        os.remove(input_file_name)
+        os.remove(input_video_file_path)
 
         frame_paths = np.sort(list(Path(tmp_folder).glob("*.jpg")))
-        frames = [frame_preprocessor(cv2.cvtColor(cv2.imread(str(p)), cv2.COLOR_RGB2BGR)) for p in frame_paths]
+        frames = [cv2.cvtColor(cv2.imread(str(p)), cv2.COLOR_RGB2BGR) for p in frame_paths]
+        if frame_preprocessor is not None:
+            frames = [frame_preprocessor(f) for f in frames]
 
     return np.array(frames)
