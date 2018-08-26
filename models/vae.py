@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 
 import numpy as np
 from keras import backend as K
@@ -90,5 +90,8 @@ class VAE:
     def encode(self, X: np.ndarray) -> np.ndarray:
         return self.encoder.predict(X)
 
-    def decode(self, X: np.ndarray) -> np.ndarray:
-        return self.decoder.predict(X)
+    def decode(self, X: np.ndarray, decoder_postprocessor: Callable[[np.ndarray], np.ndarray] = None) -> np.ndarray:
+        decoded = self.decoder.predict(X)
+        if decoder_postprocessor is not None:
+            decoded = np.array([decoder_postprocessor(x) for x in decoded])
+        return decoded

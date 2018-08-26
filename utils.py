@@ -17,7 +17,7 @@ def create_rnn_data(data: np.ndarray, time_steps: int) -> Tuple[np.ndarray, np.n
     nb_of_batches = len(data) - time_steps
 
     x_rnn_data = np.zeros((nb_of_batches, time_steps, data.shape[1]), dtype=data.dtype)
-    y_rnn_data = np.zeros((nb_of_batches, data.shape[1]),  dtype=data.dtype)
+    y_rnn_data = np.zeros((nb_of_batches, data.shape[1]), dtype=data.dtype)
 
     for start_index in range(nb_of_batches):
         end_index = start_index + time_steps
@@ -31,7 +31,7 @@ def create_rnn_data(data: np.ndarray, time_steps: int) -> Tuple[np.ndarray, np.n
     return x_rnn_data, y_rnn_data
 
 
-def show_image_grid(images, n_images=10, n_rows=3, figsize=(10, 10), randomize=False):
+def show_image_grid(images, n_images=10, n_rows=3, figsize=(10, 10), randomize=False) -> None:
     n_cols = int(np.ceil(n_images / n_rows))
 
     fig = plt.figure(figsize=figsize)
@@ -47,14 +47,20 @@ def show_image_grid(images, n_images=10, n_rows=3, figsize=(10, 10), randomize=F
         ax.set_xticks([])
 
 
-def frame_preprocessor(frame):
+def frame_preprocessor(frame: np.ndarray) -> np.ndarray:
     frame = cv2.resize(frame, (64, 64))
     # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
     frame = frame.astype(np.float32) / 255.0
     return frame
 
 
-def get_frames_from_youtube_video(video_url: str, frame_preprocessor: Callable[[np.ndarray], np.ndarray] = None):
+def decoded_frame_postprocessor(frame: np.ndarray) -> np.ndarray:
+    frame = (frame * 255).astype(np.uint8)
+    return frame
+
+
+def get_frames_from_youtube_video(video_url: str,
+                                  frame_preprocessor: Callable[[np.ndarray], np.ndarray] = None) -> np.ndarray:
     # Downloading the video
 
     output_video_file_path = tempfile.NamedTemporaryFile().name
