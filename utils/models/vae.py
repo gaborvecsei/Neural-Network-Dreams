@@ -1,8 +1,7 @@
-from typing import Tuple, List
+from typing import Tuple
 
 import numpy as np
 from keras import backend as K
-from keras.callbacks import Callback
 from keras.layers import Input, Conv2D, Flatten, Dense, Conv2DTranspose, Lambda, Reshape
 from keras.models import Model
 
@@ -20,11 +19,11 @@ class VAE:
         return z_mean + K.exp(z_log_var / 2) * epsilon
 
     @classmethod
-    def init_project_default(cls):
+    def init_project_default(cls) -> "VAE":
         obj = cls((64, 64, 3), 32)
         return obj
 
-    def _build(self):
+    def _build(self) -> Tuple[Model, Model, Model]:
         # Encoder Part
 
         vae_x = Input(shape=self.input_image_shape)
@@ -88,14 +87,8 @@ class VAE:
 
         return vae, vae_encoder, vae_decoder
 
-    def train(self, data: np.ndarray, epochs: int = 1, callbacks_list: List["Callback"] = None, batch_size: int = 32,
-              val_split=0.2):
-        if callbacks_list is None:
-            callbacks_list = []
+    def encode(self, X: np.ndarray) -> np.ndarray:
+        return self.encoder.predict(X)
 
-        self.model.fit(data, data,
-                       shuffle=True,
-                       epochs=epochs,
-                       batch_size=batch_size,
-                       validation_split=val_split,
-                       callbacks=callbacks_list)
+    def decode(self, X: np.ndarray) -> np.ndarray:
+        return self.decoder.predict(X)
