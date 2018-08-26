@@ -16,8 +16,8 @@ def create_rnn_data(data: np.ndarray, time_steps: int) -> Tuple[np.ndarray, np.n
 
     nb_of_batches = len(data) - time_steps
 
-    x_rnn_data = np.zeros((nb_of_batches, time_steps), dtype=data.dtype)
-    y_rnn_data = np.zeros(nb_of_batches, dtype=data.dtype)
+    x_rnn_data = np.zeros((nb_of_batches, time_steps, data.shape[1]), dtype=data.dtype)
+    y_rnn_data = np.zeros((nb_of_batches, data.shape[1]),  dtype=data.dtype)
 
     for start_index in range(nb_of_batches):
         end_index = start_index + time_steps
