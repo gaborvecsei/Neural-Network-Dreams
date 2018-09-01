@@ -37,7 +37,7 @@ class RNN:
 
         return model
 
-    def predict(self, X: np.ndarray):
+    def predict(self, X: np.ndarray, temp: float = 1.0):
         preds = self.model.predict(X)
 
         if self.contain_mdn_layer:
@@ -46,6 +46,6 @@ class RNN:
                                         preds,
                                         self.output_dim,
                                         self.number_of_mixtures,
-                                        temp=1.0)
+                                        temp=temp)
             preds = np.squeeze(preds, 1)
         return preds
