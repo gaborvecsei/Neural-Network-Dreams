@@ -89,3 +89,20 @@ def get_frames_from_youtube_video(video_url: str,
             frames = [frame_preprocessor(f) for f in frames]
 
     return np.array(frames)
+
+
+def convert_video_to_gif(input_video_path, output_gif_path, fps=24):
+    palette_image_path = "palette.png"
+    command_palette = 'ffmpeg -y -t 0 -i {0} -vf fps={1},scale=320:-1:flags=lanczos,palettegen {2}'.format(input_video_path,
+                                                                                                           fps,
+                                                                                                           palette_image_path)
+    command_convert = 'ffmpeg -y -t 0 -i {0} -i {1} -filter_complex "fps={2},scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" {3}'.format(input_video_path,palette_image_path, fps, output_gif_path)
+    
+    try:
+        subprocess.check_call(command_palette)
+        subprocess.check_call(command_convert)
+    except subprocess.CalledProcessError as exc:
+        print(exc.output)
+        raise
+    finally:
+        os.remove(palette_image_path)
