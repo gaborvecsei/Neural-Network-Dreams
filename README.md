@@ -1,5 +1,7 @@
 # Neural Network Dreams
 
+![img](art/generated_image_sequence.gif)
+
 (Image sequence generation with Variational Auto Encoder and Recurrent Neural Network)
 
 This is just a quick :zap: experiment what I wanted to do.
@@ -46,7 +48,7 @@ of the target variables.
 
 ![img](art/vae_decoded_vs_original.gif)
 
-##### Visualizing the Dream
+### Visualizing the Dream
 
 Current Version (with MD layer)           |  First version (without MD layer)
 :----------------------------------------:|:-------------------------:
