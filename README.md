@@ -11,7 +11,9 @@ RNN (GRU/LSTM) to generate new sequences.
 
 ## Setup
 
-TODO: Docker image
+You can try it out easily with a Docker image (Jupyter Lab/Notebook w/ GPU access):
+
+[Jupyter Lab Image](https://github.com/gaborvecsei/Jupyter-Lab-Docker)
 
 ## Train & Generate
 
