@@ -1,8 +1,8 @@
 # Neural Network Dreams
 
-![img](art/generated_image_sequence.gif)
+Image sequence generation with Variational Auto Encoder and Recurrent Neural Network
 
-(Image sequence generation with Variational Auto Encoder and Recurrent Neural Network)
+![img](art/generated_image_sequence.gif)
 
 This is just a quick :zap: experiment what I wanted to do.
 
