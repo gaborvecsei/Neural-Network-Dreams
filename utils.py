@@ -96,12 +96,12 @@ def convert_video_to_gif(input_video_path, output_gif_path, fps=24):
     command_palette = 'ffmpeg -y -t 0 -i {0} -vf fps={1},scale=320:-1:flags=lanczos,palettegen {2}'.format(input_video_path,
                                                                                                            fps,
                                                                                                            palette_image_path)
-    command_convert = 'ffmpeg -t 0 -i {0} -i {1} -filter_complex "fps=10,scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" {2}'.format(input_video_path,palette_image_path,output_gif_path)
+    command_convert = 'ffmpeg -y -t 0 -i {0} -i {1} -filter_complex "fps={2},scale=320:-1:flags=lanczos[x];[x][1:v]paletteuse" {3}'.format(input_video_path,palette_image_path, fps, output_gif_path)
     
     try:
         subprocess.check_call(command_palette)
         subprocess.check_call(command_convert)
-    except CalledProcessError as exc:
+    except subprocess.CalledProcessError as exc:
         print(exc.output)
         raise
     finally:
