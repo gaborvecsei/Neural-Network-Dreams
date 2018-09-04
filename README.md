@@ -52,6 +52,14 @@ of the target variables.
 
 ### Visualizing the Dream
 
+#### Video
+
 Current Version (with MD layer)           |  First version (without MD layer)
 :----------------------------------------:|:-------------------------:
 ![img](art/generated_image_sequence.gif)  |  ![img](art/generated_image_sequence_prev.gif)
+
+#### Simple Animation
+
+Original Animation                |  Dream
+:--------------------------------:|:-------------------------:
+![img](art/simple_animation.gif)  |  ![img](art/simple_dream_animation.gif)
