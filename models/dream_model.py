@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from pathlib import Path
+from typing import List, Tuple, Union
 import warnings
 from models import vae, rnn
 import numpy as np
@@ -78,3 +79,22 @@ class DreamerNetwork:
                                                          decoder_postprocessor=utils.decoded_frame_postprocessor)
 
         return generated_decoded_frames
+
+    def save_models(self, saved_models_folder_path: Union[Path, str], model_prefix: str = ""):
+        saved_models_folder_path = Path(saved_models_folder_path)
+        if not saved_models_folder_path.is_dir():
+            saved_models_folder_path.mkdir(parents=True)
+
+        vae_model_file_name = model_prefix + "vae_weights.h5"
+        vae_model_file_path = saved_models_folder_path / vae_model_file_name
+        self.model_vae.model.save_weights(vae_model_file_path)
+        print("VAE model saved to: {0}".format(vae_model_file_path))
+
+        rnn_model_file_name = model_prefix + "rnn_weights.h5"
+        rnn_model_file_path = saved_models_folder_path / rnn_model_file_name
+        self.model_rnn.model.save_weights(rnn_model_file_path)
+        print("RNN model saved to: {0}".format(rnn_model_file_path))
+
+    def load_models(self, vae_weights_file_path: Union[Path, str], rnn_weights_file_path: Union[Path, str]):
+        self.model_vae.model.load_weights(vae_weights_file_path)
+        self.model_rnn.model.load_weights(rnn_weights_file_path)
